@@ -1,0 +1,4 @@
+PUID=2000
+PGID=2000
+TZ=America/Edmonton
+UMASK_SET=022

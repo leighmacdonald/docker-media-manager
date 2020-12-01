@@ -1,0 +1,114 @@
+---
+version: "3.8"
+services:
+  deluge:
+    image: ghcr.io/linuxserver/deluge
+    container_name: deluge
+    env_file:
+      - env
+    environment:
+      - DELUGE_LOGLEVEL=error #optional
+    ports:
+      - "8112:8112"
+      - "30000:30000"
+      - "58846:58846"
+    volumes:
+      - deluge_config:/config
+      - /mnt/media/downloads:/downloads
+    restart: unless-stopped
+    networks:
+      local:
+  sonarr:
+    image: ghcr.io/linuxserver/sonarr
+    container_name: sonarr
+    env_file:
+      - env
+    volumes:
+      - sonarr_config:/config
+      - /mnt/media/tv:/tv
+      - /mnt/media/downloads:/downloads
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+    networks:
+      local:
+  htpc:
+    image: ghcr.io/linuxserver/htpcmanager
+    container_name: htpc
+    env_file:
+      - env
+    volumes:
+      - htpc_config:/config
+    ports:
+      - 8085:8085
+    restart: unless-stopped
+    networks:
+      local:
+  bazarr:
+    image: ghcr.io/linuxserver/bazarr
+    container_name: bazarr
+    env_file:
+      - env
+    volumes:
+      - bazarr_config:/config
+      - /mnt/media/movies:/movies
+      - /mnt/media/tv:/tv
+    ports:
+      - 6767:6767
+    restart: unless-stopped
+    networks:
+      local:
+  jackett:
+    image: ghcr.io/linuxserver/jackett
+    container_name: jackett
+    env_file:
+      - env
+    environment:
+      - AUTO_UPDATE=true #optional
+    volumes:
+      - jackett_config:/config
+      - /mnt/media/downloads:/downloads
+    ports:
+      - 9117:9117
+    restart: unless-stopped
+    networks:
+      local:
+  radarr:
+    image: ghcr.io/linuxserver/radarr
+    container_name: radarr
+    env_file:
+      - env                                                                          
+    volumes:
+      - radarr_config:/config
+      - /mnt/media/movies:/movies
+      - /mnt/media/downloads:/downloads
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+    networks:
+      local:
+  flexget:
+    container_name: flexget
+    build:
+      context: .
+      dockerfile: flexget.Dockerfile
+    volumes:
+      - flexget_config:/config
+      - ./config.yml:/config/config.yml
+    ports:
+      - 5050:5050
+    networks:
+      local:
+    command: daemon start --autoreload-config
+
+volumes:
+  htpc_config:
+  deluge_config:
+  sonarr_config:
+  bazarr_config:
+  jackett_config:
+  radarr_config:
+  flexget_config:
+
+networks:
+  local:

@@ -1,0 +1,22 @@
+web_server: yes
+
+schedules:
+  - tasks: '*'
+    interval:
+      minutes: 15
+
+tasks:
+  sonarr:
+    trakt_list:
+      account: <your_trakt_username>
+      list: watchlist
+      type: shows
+
+    accept_all: yes
+ 
+    list_add:
+      - sonarr_list:
+          base_url: http://sonarr
+          port: 8989
+          api_key: <your_sonarr_api_key>
+
